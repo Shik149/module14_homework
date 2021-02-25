@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>module 14.5</title>
+    <style>
+        div{
+            margin: 0 auto;
+            width: 100px;
+            height: 50px;
+            font-size: 35px;
+        }
+    </style>
+</head>
+<body onload="myFunction()">
+<div>
+    <p>Test</p>
+</div>
+
+<script>
+    function myFunction() {
+        let name = prompt("Добро пожаловать! Назовите, пожалуйста, ваше имя");
+        let today = new Date(),
+            hour = today.getHours(),
+            min = today.getMinutes(),
+            year = today.getFullYear(),
+            month = today.getMonth() + 1,
+            day = today.getDate();
+
+        let time = `${day}.${month}.${year} / ${hour}:${min}`;
+
+        let jsonString = {
+            'user': name,
+            'time': time
+        };
+
+        let retreived = localStorage.getItem('storage');
+
+        if (retreived !== null) {
+            var x = JSON.parse(retreived);
+            let timeSaved = x.time;
+            let nameSaved = x.user;
+
+            if (name == nameSaved) {
+                console.log(nameSaved);
+                console.log(timeSaved);
+                let msg = `"Добрый день, ${nameSaved}! Давно не виделись. В последний раз вы были у нас ${timeSaved}"`;
+                alert(msg);
+            } else {
+                localStorage.setItem('storage', JSON.stringify(jsonString));
+            }
+
+        } else {
+            localStorage.setItem('storage', JSON.stringify(jsonString));
+        }
+    }
+
+</script>
+</body>
+</html>

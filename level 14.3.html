@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .container{
+            width: 250px;
+            margin: 0 auto;
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-around;
+        }
+        select{
+            padding: 5px;
+            font-size: 16px;
+        }
+        button{
+            padding: 10px;
+            background-color: rgb(255, 105, 5);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+        }
+        table{
+            margin: 0 auto;
+            margin-top: 20px;
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 5px 10px;
+
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <select id="mySelect" name="select">
+        <option value="2017">2017</option>
+        <option value="2018">2018</option>
+        <option value="2019">2019</option>
+    </select>
+    <input type="text" placeholder="please, write id number">
+    <button class="j-btn-request">«Загрузить отчет»</button>
+</div>
+<div class="result"></div>
+
+<script>
+    function useRequest(url, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+
+        xhr.onload = function() {
+            if (xhr.status != 200) {
+                console.log('Статус ответа: ', xhr.status);
+            } else {
+                const result = JSON.parse(xhr.response);
+                if (callback) {
+                    callback(result);
+                }
+            }
+        };
+
+        xhr.onerror = function() {
+            console.log('Ошибка! Статус ответа: ', xhr.status);
+        };
+
+        xhr.send();
+    };
+
+    const result = document.querySelector('.result');
+    const btn = document.querySelector('.j-btn-request');
+
+    function displayResult(apiData){
+
+        let table;
+        apiData.forEach(item => {
+            let select = document.getElementById("mySelect").selectedIndex;
+            let currentYear = document.getElementsByTagName("option")[select].value;
+
+            if(item.year == currentYear){
+                table = `
+                         <table>
+                             <tr>
+                             <th>1 кв.</th>
+                             <th>2 кв.</th>
+                             <th>3 кв.</th>
+                             <th>4 кв.</th>
+                             </tr>
+                             <tr>
+                             <td>${item.sales.q1}</td>
+                             <td>${item.sales.q2}</td>
+                             <td>${item.sales.q3}</td>
+                             <td>${item.sales.q4}</td>
+                             </tr>
+                         </table>`;
+            }
+
+        });
+        console.log(table)
+        result.innerHTML = table;
+    }
+
+    btn.addEventListener('click', () => {
+        useRequest('https://my.api.mockaroo.com/revenue_2017-2019.json?key=fd36b440', displayResult);
+    })
+
+</script>
+</body>
+</html>
